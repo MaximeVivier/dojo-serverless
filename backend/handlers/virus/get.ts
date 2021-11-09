@@ -1,8 +1,17 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { success } from '@libs/response';
 
-export const main: APIGatewayProxyHandler = async () => (
-  success([
+export const main: APIGatewayProxyHandler = async (event) => {
+  if (event?.queryStringParameters !== null && event.queryStringParameters['id'] !== null) {
+    return success({
+      id: event.queryStringParameters['id'],
+      positionX: 50,
+      positionY: 50,
+      src: 5,
+    });
+  }
+
+  return success([
     {
       id: 'AZERTYUIOP',
       positionX: 20,
@@ -22,4 +31,4 @@ export const main: APIGatewayProxyHandler = async () => (
       src: 3,
     }
   ])
-);
+};
