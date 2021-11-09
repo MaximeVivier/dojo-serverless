@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Row, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
@@ -10,6 +10,8 @@ import virus3 from 'assets/Virus3.png';
 import virus4 from 'assets/Virus4.png';
 import virus5 from 'assets/Virus5.png';
 import virus6 from 'assets/Virus6.png';
+
+import client from '../services/networking/client';
 
 const VirusImgs = [virus1, virus2, virus3, virus4, virus5, virus6];
 
@@ -36,6 +38,13 @@ interface VirusProps {
   src: string;
 }
 
+interface Virus {
+  id: string;
+  positionX: number;
+  positionY: number;
+  src: number;
+}
+
 const AddVirusButton = styled(Button)`
   position: fixed;
   right: 20px;
@@ -58,12 +67,28 @@ const getRandomVirus = () => ({
   src: VirusImgs[getRandomPosition(6)],
 });
 
+const getVirus = async (id = null): Promise<VirusProps[]> => {
+  const viruses = (await client.request('get', '/virus')) as Virus[];
+
+  return viruses.map(
+    (virus) => ({
+      ...virus,
+      src: VirusImgs[virus.src]
+    })
+  ) as VirusProps[];
+};
+
 export default () => {
-  const [viruses, setViruses] = useState<VirusProps[]>([
-    getRandomVirus(),
-    getRandomVirus(),
-    getRandomVirus(),
-  ]);
+  const [viruses, setViruses] = useState<VirusProps[]>([]);
+
+  const getViruses = async () => {
+    const initialViruses = await getVirus();
+    setViruses(initialViruses);
+  }
+
+  useEffect(() => {
+    getViruses();
+  }, []);
 
   const addVirus = () =>
     setViruses((prevViruses) => prevViruses.concat(getRandomVirus()));
