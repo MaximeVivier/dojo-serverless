@@ -1,6 +1,7 @@
 import * as AwsConfig from 'serverless/aws';
 
 import ApiGatewayErrors from './resources/apiGatewayErrors';
+import DojoServerlessTable from './resources/dynamodb';
 
 const serverlessConfiguration: AwsConfig.Serverless = {
   service: 'dojo-serverless-backend',
@@ -10,21 +11,21 @@ const serverlessConfiguration: AwsConfig.Serverless = {
   configValidationMode: 'error',
   provider: {
     name: 'aws',
-    runtime: 'nodejs10.x',
+    runtime: 'nodejs14.x',
     region: 'eu-west-1',
     stage: 'dev',
     profile: 'dojo-serverless',
     iamRoleStatements: [
-      // {
-      //   Effect: 'Allow',
-      //   Action: [
-      //     'dynamodb:Query',
-      //     'dynamodb:PutItem',
-      //     'dynamodb:DeleteItem',
-      //     'dynamodb:ListStreams',
-      //   ],
-      //   Resource: { 'Fn::GetAtt': ['DojoServerlessTable', 'Arn'] },
-      // },
+      {
+        Effect: 'Allow',
+        Action: [
+          'dynamodb:Query',
+          'dynamodb:PutItem',
+          'dynamodb:DeleteItem',
+          'dynamodb:ListStreams',
+        ],
+        Resource: { 'Fn::GetAtt': ['DojoServerlessTable', 'Arn'] },
+      },
     ],
     usagePlan: {
       quota: {
@@ -67,6 +68,7 @@ const serverlessConfiguration: AwsConfig.Serverless = {
   resources: {
     Resources: {
       ...ApiGatewayErrors,
+      DojoServerlessTable,
     },
   },
 };
