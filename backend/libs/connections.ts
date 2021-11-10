@@ -13,11 +13,23 @@ export const createConnection = async (
   connectionId: string,
   endpoint: string,
 ): Promise<void> => {
-  // TODO insert a connection in the DynamoDB
+
+  await documentClient
+    .put({
+      TableName: 'dojo-serverless-table',
+      Item: { partitionKey: 'Connection', sortKey: connectionId, endpoint },
+    })
+    .promise();
 };
 
 export const deleteConnection = async (connectionId: string): Promise<void> => {
-  // TODO delete a connection from the DynamoDB
+
+  await documentClient
+    .delete({
+      TableName: 'dojo-serverless-table',
+      Key: { partitionKey: 'Connection', sortKey: connectionId },
+    })
+    .promise();
 };
 
 export const getAllConnections = async (): Promise<

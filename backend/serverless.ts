@@ -11,7 +11,7 @@ const serverlessConfiguration: AwsConfig.Serverless = {
   configValidationMode: 'error',
   provider: {
     name: 'aws',
-    runtime: 'nodejs10.x',
+    runtime: 'nodejs14.x',
     region: 'eu-west-1',
     stage: 'dev',
     profile: 'dojo-serverless',
@@ -85,6 +85,26 @@ const serverlessConfiguration: AwsConfig.Serverless = {
             method: 'delete',
             path: 'virus/{id}',
             cors: true,
+          },
+        },
+      ],
+    },
+    connectHandler: {
+      handler: 'src/handlers/real-time/connect.main',
+      events: [
+        {
+          websocket: {
+            route: '$connect'
+          },
+        },
+      ],
+    },
+    disconnectHandler: {
+      handler: 'src/handlers/real-time/disconnect.main',
+      events: [
+        {
+          websocket: {
+            route: '$disconnect'
           },
         },
       ],
