@@ -82,11 +82,11 @@ export default () => {
   };
 
   const killVirus = async (virusId: string) => {
-    console.log('Implement the delete route first!');
-    // await fetch(`${process.env.REACT_APP_API_BASE_URL}/virus/${virusId}`, {
-    //   method: 'DELETE',
-    // });
-    // setViruses((prevViruses) => prevViruses.filter(({ id }) => id !== virusId));
+    // console.log('Implement the delete route first!');
+    await fetch(`${process.env.REACT_APP_API_BASE_URL}/virus/${virusId}`, {
+      method: 'DELETE',
+    });
+    setViruses((prevViruses) => prevViruses.filter(({ id }) => id !== virusId));
   };
 
   return (

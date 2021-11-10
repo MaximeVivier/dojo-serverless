@@ -76,6 +76,25 @@ const serverlessConfiguration: AwsConfig.Serverless = {
         },
       ],
     },
+    killVirus: {
+      handler: 'src/handlers/virus/kill.main',
+      events: [
+        {
+          http: {
+            method: 'delete',
+            path: 'virus/{id}',
+            request: {
+              parameters: {
+                paths: {
+                  id: true
+                }
+              }
+            },
+            cors: true,
+          },
+        },
+      ],
+    },
   },
   resources: {
     Resources: {
