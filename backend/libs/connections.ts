@@ -35,7 +35,13 @@ export const deleteConnection = async (connectionId: string): Promise<void> => {
 export const getAllConnections = async (): Promise<
   { connectionId: string; endpoint: string }[]
 > => {
-  // TODO fetch every connections from the DynamoDB
+  const { Items = [] } = await documentClient
+    .query({
+      TableName: 'dojo-serverless-table',
+      KeyConditionExpression: 'partitionKey = :partitionKey',
+      ExpressionAttributeValues: { ':partitionKey': 'Connection' },
+    })
+    .promise();
   return (Items as Connection[]).map(({ sortKey, endpoint }) => ({
     connectionId: sortKey,
     endpoint,

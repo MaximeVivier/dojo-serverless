@@ -62,6 +62,11 @@ const serverlessConfiguration: AwsConfig.Serverless = {
             cors: true,
           },
         },
+        {
+          schedule: {
+            rate: 'rate(1 minute)'
+          }
+        },
       ],
     },
     getVirus: {
