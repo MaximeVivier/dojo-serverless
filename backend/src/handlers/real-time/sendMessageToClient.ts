@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { DynamoDBStreamEvent } from 'aws-lambda';
-import { Converter } from 'aws-sdk/clients/dynamodb';
+import DynamoDB, { Converter } from 'aws-sdk/clients/dynamodb';
 import { getAllConnections } from '@libs/connections';
 import { sendMessageToConnection } from '@libs/websocket';
 import { Item } from '@libs/types';
@@ -19,13 +19,14 @@ const sendMessageToEachConnection = async (message: any): Promise<void> => {
     }));
 };
 
-const isVirus = (item: Item): item is Virus => item.partitionKey.S === 'Virus';
+const isVirus = (item: Item): item is Virus => item.partitionKey === 'Virus';
 
 export const main = async (event: DynamoDBStreamEvent): Promise<void> => {
     // TODO for each record, if it's an insertion of virus, sendMessageToEachConnection
     await Promise.all(event.Records.map(async record => {
-        if (record.eventName === 'INSERT' && isVirus(record.dynamodb?.Keys)) {
-            await sendMessageToEachConnection(JSON.stringify({ virusId: record.dynamodb?.Keys.sortKey.S }));
+        const image = DynamoDB.Converter.unmarshall(record.dynamodb?.NewImage || record.dynamodb?.OldImage);
+        if (isVirus(image)) {
+            await sendMessageToEachConnection(JSON.stringify({ virusId: image.sortKey, action: record.eventName }));
         }
     }));
 

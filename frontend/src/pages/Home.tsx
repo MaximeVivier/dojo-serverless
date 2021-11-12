@@ -93,7 +93,14 @@ export default () => {
     const data = JSON.parse(JSON.parse(message.data));
     const virusId = data.virusId;
     if (virusId) {
-      setViruses((prevViruses) => prevViruses.concat(getRandomVirus(virusId)));
+      switch (data.action) {
+        case 'INSERT':
+          setViruses((prevViruses) => prevViruses.concat(getRandomVirus(virusId)));
+          break
+        case 'REMOVE':
+          setViruses((prevViruses) => prevViruses.filter(virus => virus.id !== virusId));
+          break
+      }
     }
   };
 
