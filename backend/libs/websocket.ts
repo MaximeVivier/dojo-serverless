@@ -31,9 +31,16 @@ export const sendMessageToConnection = async ({
   endpoint: string;
   message: any;
 }): Promise<void> => {
-  // TODO init apiGateWay client with the correct endpoint
+  const apigatewaymanagementapi = new ApiGatewayManagementApi({
+    endpoint,
+  });
   try {
-    // TODO send a message to a connection
+    await apigatewaymanagementapi.postToConnection(
+      {
+        ConnectionId: connectionId, // connectionId of the receiving ws-client
+        Data: JSON.stringify(message),
+      }
+    ).promise();
   } catch (error) {
     if (error.statusCode !== 410) {
       throw error;
